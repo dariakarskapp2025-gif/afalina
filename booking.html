@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Бронювання столика — Афаліна</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif:wght@400;600;700&family=Playfair+Display:wght@400;500&display=swap">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+<header class="hd">
+    <div class="wrap">
+        <a class="logo" href="index.html">
+            <img src="img/logo.png" alt="Афаліна — ресторан">
+        </a>
+
+        <nav class="nav" id="nav">
+            <a href="index.html">Головна</a>
+            <a href="menu.html">Меню</a>
+            <a href="pool.html">Басейн</a>
+            <a href="banquets.html">Банкетні зали</a>
+            <a href="kids.html">Дитяча кімната</a>
+            <a href="contacts.html">Контакти</a>
+        </nav>
+
+        <span class="lang"><b>UA</b> / EN</span>
+
+        <a class="btn" href="booking.html">
+            Забронювати столик
+        </a>
+
+        <button class="burger" aria-label="Меню" aria-expanded="false">☰</button>
+    </div>
+</header>
+
+<main>
+    <section class="page-hero dark">
+        <div class="wrap">
+            <div class="eyebrow">Онлайн-резервація — Афаліна Чорноморськ</div>
+
+            <h1>Бронювання столика біля моря</h1>
+
+            <p class="lead">
+                Оберіть дату, час та улюблену зону для незабутнього відпочинку
+                з видом на Чорне море й чорноморськими гастрономічними шедеврами.
+            </p>
+        </div>
+    </section>
+
+    <section class="sec">
+        <form class="wrap book" data-ok="Дякуємо! Бронювання надіслано">
+
+            <div style="display:grid;gap:24px">
+
+                <!-- Параметри візиту -->
+                <div class="panel">
+                    <div class="step">
+                        <i>1</i>Параметри візиту
+                    </div>
+
+                    <div class="form-grid">
+
+                        <label class="f">
+                            <span>Дата візиту</span>
+                            <input type="date" id="date" name="date" required>
+                        </label>
+
+                        <div class="f">
+                            <span>Кількість гостей</span>
+
+                            <div class="stepper">
+                                <button type="button" data-g="-1" aria-label="Менше">−</button>
+                                <b id="guests">4 гостя</b>
+                                <button type="button" data-g="1" aria-label="Більше">+</button>
+                            </div>
+                        </div>
+
+                        <div class="f span2">
+                            <span>Бажаний час посадки</span>
+
+                            <div class="times">
+                                <button type="button">12:00</button>
+                                <button type="button">14:00</button>
+                                <button type="button">17:00</button>
+                                <button type="button" class="on">19:00</button>
+                                <button type="button">20:30</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Віджет погоди -->
+                    <div class="weather-widget" id="weatherWidget">
+                        <h3>Погода на день бронювання</h3>
+
+                        <div id="weatherInfo">
+                            Оберіть дату, щоб побачити прогноз погоди.
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Вибір зони ресторану -->
+                <div class="panel">
+                    <div class="step">
+                        <i>2</i>Вибір зони ресторану
+                    </div>
+
+                    <div class="zones">
+
+                        <button type="button" class="zone on">
+                            <img src="img/z-terrace.jpg" alt="" loading="lazy">
+
+                            <div>
+                                <h3>Панорамна тераса</h3>
+                                Шум хвиль, свіжий морський бриз та романтичні свічки у надвечір’ї.
+                                <br>
+                                <b style="color:var(--teal-d)">Відкритий простір</b>
+                            </div>
+                        </button>
+
+                        <button type="button" class="zone">
+                            <img src="img/z-hall.jpg" alt="" loading="lazy">
+
+                            <div>
+                                <h3>Основна зала</h3>
+                                Затишний класичний інтер’єр з каміном, живою музикою та клімат-контролем.
+                                <br>
+                                <b style="color:var(--teal-d)">Критий зал</b>
+                            </div>
+                        </button>
+
+                        <button type="button" class="zone">
+                            <img src="img/z-pool.jpg" alt="" loading="lazy">
+
+                            <div>
+                                <h3>Лаунж біля басейну</h3>
+                                Невимушена курортна атмосфера, м’які простори дивани та вечірні вогні.
+                                <br>
+                                <b style="color:var(--teal-d)">Poolside lounge</b>
+                            </div>
+                        </button>
+
+                    </div>
+                </div>
+
+                <!-- Контактні дані -->
+                <div class="panel">
+                    <div class="step">
+                        <i>3</i>Контактні дані гостя
+                    </div>
+
+                    <div class="form-grid">
+
+                        <label class="f">
+                            <span>Ім’я та прізвище *</span>
+                            <input required placeholder="Олена Ковальчук" autocomplete="name">
+                        </label>
+
+                        <label class="f">
+                            <span>Номер телефону *</span>
+                            <input required type="tel" placeholder="+380 (67) 890–12–34" autocomplete="tel">
+                        </label>
+
+                        <label class="f span2">
+                            <span>Електронна пошта (для підтвердження)</span>
+                            <input type="email" placeholder="olena.kovalchuk@gmail.com" autocomplete="email">
+                        </label>
+
+                        <label class="f span2">
+                            <span>Особливі побажання</span>
+                            <textarea id="wish" placeholder="Святкуємо день народження…"></textarea>
+                        </label>
+
+                        <div class="qa span2" style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px">
+                            <button type="button">+ День народження</button>
+                            <button type="button">+ Дитячий стільчик</button>
+                            <button type="button">+ Романтичний вечір</button>
+                            <button type="button">+ Тихий куточок</button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Підсумок бронювання -->
+            <aside class="side">
+
+                <div class="sum">
+                    <div class="eyebrow" style="color:#7fd6d6">Ваш резерв</div>
+                    <h3>Деталі бронювання</h3>
+                </div>
+
+                <div class="sumb">
+
+                    <p>
+                        <span>Дата:</span>
+                        <b id="s-d">—</b>
+                    </p>
+
+                    <p>
+                        <span>Час посадки:</span>
+                        <b id="s-t">—</b>
+                    </p>
+
+                    <p>
+                        <span>Гості:</span>
+                        <b id="s-g">—</b>
+                    </p>
+
+                    <p>
+                        <span>Обрана зона:</span>
+                        <b id="s-z" style="color:var(--teal-d);text-align:right">—</b>
+                    </p>
+
+                    <div class="info" style="margin:0">
+                        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z"/>
+                            <circle cx="12" cy="10" r="2.5"/>
+                        </svg>
+
+                        <b>Афаліна:</b> м. Чорноморськ, вул. Пляжна, 12
+                        (перша лінія з прямим спуском на пляж).
+                    </div>
+
+                    <p style="font-size:13px;color:var(--muted)">
+                        Бронювання тримається протягом 20 хвилин від зазначеного часу.
+                        Скасування або перенесення — безкоштовно.
+                    </p>
+
+                    <button class="btn" type="submit" style="justify-content:center">
+                        Підтвердити бронювання
+                    </button>
+
+                    <p style="justify-content:center;font-size:13px">
+                        Потрібна допомога?
+                        <a href="tel:+380487001122" style="color:var(--teal-d)">
+                            +38 (048) 700–11–22
+                        </a>
+                    </p>
+
+                </div>
+            </aside>
+
+        </form>
+    </section>
+</main>
+
+<footer class="ft">
+    <div class="wrap">
+
+        <div class="band">
+            <div>
+                <h2>Зустрінемось біля моря?</h2>
+                <p>Море, смаки й теплі моменти в колі найдорожчих.</p>
+            </div>
+
+            <a class="btn" href="booking.html">
+                Забронювати столик
+            </a>
+        </div>
+
+        <div class="fcols">
+
+            <div>
+                <h4>Контакти</h4>
+                м. Чорноморськ, вул. Пляжна, 12
+                <br>
+                Телефон:
+                <a href="tel:+380487001122">+38 (048) 700–11–22</a>
+                <small>На першій лінії узбережжя Чорного моря</small>
+            </div>
+
+            <div>
+                <h4>Години роботи</h4>
+                Пн–Нд: <b>09:00 – 23:00</b>
+                <br>
+                Басейн: <b>08:00 – 20:00</b>
+                <small>Сезонні зміни в графіку уточнюйте в адміністратора</small>
+            </div>
+
+            <div>
+                <h4>Ми в соцмережах</h4>
+                Слідкуйте за свіжими морепродуктами дня, виступами та подіями
+
+                <div class="soc">
+                    <a href="#" aria-label="Instagram">Instagram</a>
+                    <a href="#" aria-label="Сайт">Сайт</a>
+                    <a href="#" aria-label="Telegram">Telegram</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="fb">
+            <span>© 2026 «Афаліна». Усі права захищено.</span>
+            <span>
+                Політика конфіденційності
+                &nbsp;
+                <a href="#nav">Вгору ↑</a>
+            </span>
+        </div>
+
+    </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
