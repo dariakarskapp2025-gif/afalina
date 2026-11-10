@@ -2,10 +2,10 @@ const $ = (s, r = document) => r.querySelector(s),
       $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
 // =========================================================
-// ДАНІ ТЕЛЕГРАМ-БОТА ДЛЯ СПОВІЩЕНЬ
+// АДРЕСА CLOUDFLARE WORKER (токен бота більше НЕ зберігається в коді сайту)
+// Встав сюди адресу свого воркера, наприклад: https://afalina-forms.твійнік.workers.dev
 // =========================================================
-const TELEGRAM_BOT_TOKEN = '9177271367:AAGsoDJ8jK9s6pF3tr-MVJHkrrSsV4SWtDQ';
-const TELEGRAM_CHAT_ID = '1121199482';
+const WORKER_URL = 'https://afalina-forms.daria-karska-pp-2025.workers.dev';
 
 // 1. Інтерактив меню
 $('.burger')?.addEventListener('click', e => {
@@ -72,158 +72,196 @@ if (weatherBookingDate && weatherInfo) {
 }
 
 // =========================================================
-// 3. ВАЛІДАЦІЯ ТА ВІДПРАВКА В TELEGRAM
+// 3. ВАЛІДАЦІЯ ФОРМ ТА ВІДПРАВКА В TELEGRAM (через Cloudflare Worker)
 // =========================================================
+// ---------- Валідація ----------
+const iso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
 
-const REGEX_PHONE = /^\+380\d{9}$/;
-const REGEX_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function normPhone(v) {
+  const d = v.replace(/[^\d+]/g, '');
+  if (/^0\d{9}$/.test(d)) return '+38' + d;
+  if (/^380\d{9}$/.test(d)) return '+' + d;
+  return d;
+}
 
-function setError(input, message) {
-  if (!input) return;
-  input.classList.add('border-red-500', 'bg-red-50');
-  input.classList.remove('border-green-500', 'bg-green-50');
-  input.setAttribute('aria-invalid', 'true');
-  
-  const errEl = document.getElementById(input.id + 'Error');
-  if (errEl) {
-    errEl.textContent = message;
-    errEl.classList.remove('hidden');
+const CHECKS = {
+  name: v => /^\p{L}[\p{L}'’ʼ\- ]{1,59}$/u.test(v) ? '' : 'Лише літери (2–60 символів), без цифр і символів',
+  phone: v => /^\+380\d{9}$/.test(normPhone(v)) ? '' : 'Формат: +380XXXXXXXXX або 0XXXXXXXXX',
+  email: v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? '' : 'Вкажіть коректну пошту, напр. name@gmail.com',
+  date: (v, el) => {
+    if (!v) return 'Оберіть дату';
+    const d = new Date(v + 'T00:00:00'), min = startOfToday();
+    if (el.closest('form').dataset.type === 'banquet') min.setDate(min.getDate() + 1);
+    if (isNaN(d)) return 'Некоректна дата';
+    if (d < min) return el.closest('form').dataset.type === 'banquet' ? 'Оберіть дату не раніше завтрашньої' : 'Дата не може бути в минулому';
+    if (d > addDays(startOfToday(), 365)) return 'Бронювання доступне не далі ніж на рік уперед';
+    return '';
+  },
+  guests: v => /^\d+$/.test(v) && +v >= 5 && +v <= 200 ? '' : 'Кількість гостей: від 5 до 200',
+  message: v => v.length >= 5 && v.length <= 1000 ? '' : 'Повідомлення: від 5 до 1000 символів',
+  wish: v => v.length <= 500 ? '' : 'Не більше 500 символів',
+  comment: v => v.length <= 1000 ? '' : 'Не більше 1000 символів'
+};
+
+function checkField(el) {
+  const name = el.name, v = el.type === 'checkbox' ? '' : el.value.trim();
+  let msg = '';
+  if (el.type === 'checkbox') {
+    if (el.required && !el.checked) msg = 'Потрібна ваша згода';
+  } else if (!v) {
+    if (el.required) msg = 'Заповніть це поле';
+  } else if (CHECKS[name]) {
+    msg = CHECKS[name](v, el);
+  }
+  showError(el, msg);
+  return !msg;
+}
+
+function showError(el, msg) {
+  const box = el.closest('.f, label') || el.parentNode;
+  let err = $('.err', box);
+  if (msg) {
+    if (!err) { err = document.createElement('small'); err.className = 'err'; err.setAttribute('role', 'alert'); box.appendChild(err); }
+    err.textContent = msg;
+    el.classList.add('invalid');
+    el.setAttribute('aria-invalid', 'true');
+  } else {
+    err?.remove();
+    el.classList.remove('invalid');
+    el.removeAttribute('aria-invalid');
   }
 }
 
-function setSuccess(input) {
-  if (!input) return;
-  input.classList.remove('border-red-500', 'bg-red-50');
-  input.classList.add('border-green-500', 'bg-green-50');
-  input.setAttribute('aria-invalid', 'false');
-  
-  const errEl = document.getElementById(input.id + 'Error');
-  if (errEl) {
-    errEl.classList.add('hidden');
-    errEl.textContent = '';
+// ---------- Форми ----------
+function setStatus(form, text, ok) {
+  let s = $('.form-status', form);
+  if (!s) {
+    s = document.createElement('p');
+    s.className = 'form-status';
+    s.setAttribute('role', 'status');
+    const btn = $('button[type=submit]', form);
+    btn.parentNode.insertBefore(s, btn);
   }
+  s.textContent = text;
+  s.className = 'form-status ' + (ok ? 'ok' : 'bad');
 }
 
-function validateField(field) {
-  const id = field.id;
-  const val = field.value.trim();
+const plural = n => n === 1 ? 'гість' : (n >= 2 && n <= 4) ? 'гості' : 'гостей';
 
-  // 1. Перевірка імені (min 2 символи)
-  if (id === 'username' || field.name === 'username') {
-    if (val.length < 2) {
-      setError(field, "Введіть ім'я та прізвище (не менше 2 символів)");
-      return false;
-    }
-  } 
-  // 2. Перевірка телефону (+380XXXXXXXXX)
-  else if (id === 'phone' || field.type === 'tel') {
-    let cleanPhone = val.replace(/\s+/g, '').replace(/[-()]/g, '');
-    if (cleanPhone.startsWith('0') && cleanPhone.length === 10) {
-      cleanPhone = '+38' + cleanPhone;
-      field.value = cleanPhone;
-    }
-    if (!REGEX_PHONE.test(cleanPhone)) {
-      setError(field, "Номер має бути у форматі +380XXXXXXXXX");
-      return false;
-    }
-  } 
-  // 3. Перевірка Email
-  else if (id === 'email' || field.type === 'email') {
-    if (!REGEX_EMAIL.test(val)) {
-      setError(field, "Вкажіть коректну електронну пошту");
-      return false;
-    }
-  } 
-  // 4. Перевірка текстового повідомлення
-  else if (id === 'message' || field.tagName === 'TEXTAREA') {
-    if (val.length < 5) {
-      setError(field, "Введіть повідомлення (не менше 5 символів)");
-      return false;
-    }
-  }
-  // 5. Перевірка чекбоксу згоди
-  else if (field.type === 'checkbox') {
-    if (!field.checked) {
-      setError(field, "Необхідно погодитися з політикою конфіденційності");
-      return false;
-    }
-  }
+$$('form[data-type]').forEach(form => {
+  const type = form.dataset.type;
+  form.noValidate = true;
+  const fields = () => $$('input[name], select[name], textarea[name]', form).filter(e => e.name !== 'website');
 
-  setSuccess(field);
-  return true;
-}
-
-const form = document.querySelector('form');
-
-if (form) {
-  const inputs = $$('input, textarea', form);
-
-  inputs.forEach(input => {
-    input.addEventListener('blur', () => validateField(input));
-    input.addEventListener('input', () => {
-      if (input.getAttribute('aria-invalid') === 'true') validateField(input);
+  fields().forEach(el => {
+    el.addEventListener('blur', () => checkField(el));
+    el.addEventListener(el.type === 'checkbox' || el.tagName === 'SELECT' ? 'change' : 'input', () => {
+      if (el.getAttribute('aria-invalid') === 'true') checkField(el);
     });
   });
 
-  form.addEventListener('submit', async (e) => {
+  // мінімальна дата
+  const dateEl = $('input[type=date]', form);
+  if (dateEl) dateEl.min = iso(type === 'banquet' ? addDays(startOfToday(), 1) : startOfToday());
+
+  // --- специфіка бронювання столика ---
+  let guests = 4;
+  if (type === 'booking') {
+    if (dateEl && !dateEl.value) dateEl.value = iso(new Date());
+    const sum = id => $('#' + id);
+    const render = () => {
+      $('#guests').textContent = guests + ' ' + plural(guests);
+      const t = $('.times .on'), z = $('.zone.on h3');
+      if (sum('s-g')) sum('s-g').textContent = guests + ' ' + plural(guests);
+      if (sum('s-t')) sum('s-t').textContent = t ? t.textContent : '—';
+      if (sum('s-z')) sum('s-z').textContent = z ? z.textContent : '—';
+      if (sum('s-d')) sum('s-d').textContent = dateEl && dateEl.value
+        ? new Date(dateEl.value + 'T12:00:00').toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' }) : '—';
+    };
+    $$('.stepper button', form).forEach(b => b.addEventListener('click', () => {
+      guests = Math.min(20, Math.max(1, guests + (+b.dataset.g)));
+      render();
+    }));
+    $$('.times button', form).forEach(b => b.addEventListener('click', () => {
+      $$('.times button', form).forEach(x => x.classList.remove('on'));
+      b.classList.add('on'); render();
+    }));
+    $$('.zone', form).forEach(b => b.addEventListener('click', () => {
+      $$('.zone', form).forEach(x => x.classList.remove('on'));
+      b.classList.add('on'); render();
+    }));
+    $$('.qa button', form).forEach(b => b.addEventListener('click', () => {
+      const w = $('[name=wish]', form), t = b.textContent.replace('+', '').trim();
+      if (w && !w.value.includes(t)) w.value = (w.value ? w.value + '. ' : '') + t;
+    }));
+    dateEl?.addEventListener('change', render);
+    render();
+  }
+
+  form.addEventListener('submit', async e => {
     e.preventDefault();
-    let isValid = true;
+    let okAll = true, first = null;
+    fields().forEach(el => { if (!checkField(el) && okAll) { okAll = false; first = el; } });
 
-    // Перевіряємо всі поля перед відправкою
-    inputs.forEach(input => {
-      if (!validateField(input)) isValid = false;
-    });
+    // час посадки не в минулому, якщо дата — сьогодні
+    if (type === 'booking' && okAll && dateEl.value === iso(new Date())) {
+      const t = $('.times .on')?.textContent || '';
+      const [h, m] = t.split(':').map(Number);
+      const now = new Date();
+      if (h * 60 + m <= now.getHours() * 60 + now.getMinutes()) {
+        setStatus(form, 'Цей час уже минув. Оберіть пізніший час або іншу дату.', false);
+        return;
+      }
+    }
+    if (!okAll) { first?.focus(); setStatus(form, 'Перевірте, будь ласка, виділені поля.', false); return; }
 
-    if (!isValid) return;
+    if (form.website?.value) { setStatus(form, form.dataset.ok || 'Дякуємо! Заявку надіслано', true); return; } // бот
 
-    const submitBtn = $('#submitBtn') || $('button[type=submit]', form);
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Надсилання...';
+    const key = 'sent_' + type;
+    try {
+      if (Date.now() - (+localStorage.getItem(key) || 0) < 30000) {
+        setStatus(form, 'Зачекайте пів хвилини перед повторною відправкою.', false);
+        return;
+      }
+    } catch (_) {}
+
+    const data = {};
+    fields().forEach(el => { data[el.name] = el.type === 'checkbox' ? el.checked : el.value.trim(); });
+    data.phone = normPhone(data.phone);
+    if (type === 'booking') {
+      data.guests = guests + ' ' + plural(guests);
+      data.time = $('.times .on')?.textContent || '';
+      data.zone = $('.zone.on h3')?.textContent || '';
     }
 
-    const username = $('#username')?.value.trim() || '—';
-    const phone = $('#phone')?.value.trim() || '—';
-    const email = $('#email')?.value.trim() || '—';
-    const date = $('#date')?.value || '—';
-    const message = $('#message')?.value.trim() || '—';
-
-    const textMessage = `
-🔔 <b>НОВА ЗАЯВКА З САЙТУ «АФАЛІНА»!</b>
-
-👤 <b>Гість:</b> ${username}
-📞 <b>Телефон:</b> ${phone}
-📧 <b>Email:</b> ${email}
-📅 <b>Дата візиту:</b> ${date}
-💬 <b>Повідомлення:</b>
-${message}
-    `;
-
+    const btn = $('button[type=submit]', form), label = btn.innerHTML;
+    btn.disabled = true; btn.textContent = 'Надсилання…';
     try {
-      const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      const res = await fetch(WORKER_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: TELEGRAM_CHAT_ID,
-          text: textMessage,
-          parse_mode: 'HTML'
-        })
+        body: JSON.stringify({ type, data, website: '' })
       });
-
-      if (response.ok) {
-        alert('✅ Дякуємо! Ваша заявка успішно надіслана в Telegram!');
-        form.reset();
-        $$('.border-green-500', form).forEach(el => el.classList.remove('border-green-500', 'bg-green-50'));
-      } else {
-        alert('❌ Не вдалося надіслати. Перевірте, чи ви натиснули START у своєму боті в Telegram.');
-      }
+      if (!res.ok) throw new Error(res.status);
+      try { localStorage.setItem(key, Date.now()); } catch (_) {}
+      setStatus(form, form.dataset.ok || 'Дякуємо! Заявку надіслано. Менеджер зв’яжеться з вами найближчим часом.', true);
+      form.reset();
+      if (type === 'booking') { guests = 4; $('#guests').textContent = '4 ' + plural(4); }
     } catch (err) {
-      alert('❌ Збій мережі під час з’єднання з Telegram.');
+      setStatus(form, 'Не вдалося надіслати. Спробуйте ще раз або зателефонуйте: +38 (048) 700–11–22', false);
     } finally {
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Надіслати повідомлення ↗';
-      }
+      btn.disabled = false; btn.innerHTML = label;
     }
   });
-}
+});
+
+// ---------- Перехід з кнопки «Розрахувати бенкет»: contacts.html?topic=banquet ----------
+(function presetTopic() {
+  const sel = $('form[data-type="contact"] select[name="topic"]');
+  if (!sel) return;
+  const map = { banquet: 'Банкет або свято', booking: 'Бронювання столика', pool: 'Басейн та шезлонги', kids: 'Дитяча кімната' };
+  const want = map[new URLSearchParams(location.search).get('topic')];
+  if (want) sel.value = want;
+})();
