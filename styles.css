@@ -170,3 +170,12 @@ main img:hover {
     color: #0a9396;
     margin: 10px 0;
 }
+/* ===== Валідація форм: додати в КІНЕЦЬ styles.css ===== */
+.err{display:block;margin-top:4px;font-size:12px;line-height:1.3;color:#b3261e}
+input.invalid,select.invalid,textarea.invalid{border-color:#b3261e!important;background:#fdf1f0}
+input.invalid:focus,select.invalid:focus,textarea.invalid:focus{outline-color:#b3261e}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}
+.form-status{margin:16px 0 0;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.4}
+.form-status.ok{background:#e6f6ee;color:#146c43}
+.form-status.bad{background:#fdf1f0;color:#b3261e}
+button[disabled]{opacity:.6;cursor:wait}
