@@ -10,13 +10,79 @@
  
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Стилі інтерактивної схеми залу та вибору столиків (ЛР №11) */
+        /* Вирівнювання степера гостей та полів форми (ЛР №11) */
+        .stepper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 52px;
+            box-sizing: border-box;
+        }
+        .guests-direct-input {
+            flex: 1;
+            min-width: 0;
+            text-align: center;
+            font-weight: 700;
+            font-size: 16px;
+            border: none;
+            background: transparent;
+            color: #1b2a2b;
+            padding: 4px;
+            border-radius: 8px;
+        }
+        .guests-direct-input:focus {
+            outline: 2px solid var(--teal-d, #144e52);
+            background: #fff;
+        }
+        .guests-direct-input.is-invalid {
+            outline: 2px solid #d93025 !important;
+            background: #fff8f7 !important;
+        }
+        .edge-error-msg {
+            display: none;
+            color: #d93025;
+            font-size: 12px;
+            margin-top: 6px;
+            line-height: 1.35;
+        }
+        .edge-error-msg:not(:empty) {
+            display: block;
+        }
+
+        /* Стилі інтерактивної схеми залу та вибору столиків */
         .hall-map-box {
             margin-top: 18px;
             background: #f4f7f6;
             border: 1px solid rgba(20, 78, 82, 0.14);
             border-radius: 14px;
             padding: 18px;
+        }
+        .hall-map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .hall-panorama-label {
+            display: inline-flex !important;
+            flex-direction: row !important;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #364748;
+            cursor: pointer;
+            margin: 0;
+            width: auto !important;
+        }
+        .hall-panorama-label input[type="checkbox"] {
+            width: 16px !important;
+            height: 16px !important;
+            margin: 0;
+            accent-color: #144e52;
+            flex-shrink: 0;
         }
         .hall-landmark {
             text-align: center;
@@ -94,27 +160,6 @@
             vertical-align: middle;
             font-style: normal;
         }
-        .guests-direct-input {
-            width: 64px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 15px;
-            border: 1px solid #cbd5d6;
-            border-radius: 8px;
-            padding: 4px 6px;
-            color: #1b2a2b;
-        }
-        .guests-direct-input.is-invalid {
-            border-color: #d93025 !important;
-            background: #fff8f7 !important;
-        }
-        .edge-error-msg {
-            display: block;
-            color: #d93025;
-            font-size: 12px;
-            min-height: 16px;
-            margin-top: 5px;
-        }
     </style>
 </head>
  
@@ -169,7 +214,7 @@
                         <i>1</i>Параметри візиту
                     </div>
  
-                    <div class="form-grid">
+                    <div class="form-grid" style="align-items:start;">
  
                         <label class="f">
                             <span>Дата візиту</span>
@@ -258,10 +303,10 @@
 
                     <!-- ІНТЕРАКТИВНА СХЕМА СТОЛИКІВ (ЛР №11) -->
                     <div class="hall-map-box" id="hallMapBox">
-                        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+                        <div class="hall-map-header">
                             <strong style="font-size:15px;color:#1b2a2b;">Схема розміщення столиків:</strong>
-                            <label style="font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer;color:#364748;">
-                                <input type="checkbox" id="onlyWindowFilter" style="accent-color:#144e52;">
+                            <label class="hall-panorama-label" for="onlyWindowFilter">
+                                <input type="checkbox" id="onlyWindowFilter">
                                 <span>Тільки столики біля панорами / води</span>
                             </label>
                         </div>
@@ -446,6 +491,6 @@
     </div>
 </footer>
  
-<script src="main.js?v=3"></script>
+<script src="main.js?v=4"></script>
 </body>
 </html>
