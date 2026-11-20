@@ -325,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // 5. ІНТЕРАКТИВНА СХЕМА ЗАЛУ ТА ВИБІР СТОЛИКА + EDGE CASES (ЛР №11)
 // =========================================================
 (function initInteractiveHallMap() {
-  document.addEventListener('DOMContentLoaded', () => {
+  function runHallWidget() {
     const tablesGrid = document.getElementById('tablesGrid');
     const guestsInput = document.getElementById('guestsInput');
     const edgeErrorEl = document.getElementById('guestsEdgeError');
@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const zoneButtons = document.querySelectorAll('.zones .zone');
     const stepperBtns = document.querySelectorAll('.stepper button[data-g]');
 
-    // Захист: якщо ми не на сторінці booking.html, безпечно завершуємо роботу
+    // Захист: якщо ми не на сторінці booking.html, безпечно виходимо
     if (!tablesGrid || !guestsInput || !edgeErrorEl) return;
 
     const HALL_CONFIG = {
@@ -426,7 +426,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const panoramaOnly = Boolean(onlyWindowCheck && onlyWindowCheck.checked);
 
-      // Перевіряємо, чи обраний раніше столик досі доступний під нові умови
+      // Автопідбір доступного столика, якщо поточний не підходить
       const currentTable = zoneObj.tables.find(t => t.num === selectedTableNum);
       const isCurrentAvailable = currentTable &&
         !currentTable.busy &&
@@ -442,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedTableNum = autoPick ? autoPick.num : null;
       }
 
-      // Малюємо інтерактивні кнопки столиків
+      // Генерація кнопок столиків на схемі
       tablesGrid.innerHTML = '';
       zoneObj.tables.forEach(t => {
         const btn = document.createElement('button');
@@ -473,7 +473,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tablesGrid.appendChild(btn);
       });
 
-      // Синхронізація правої картки деталей бронювання
+      // Оновлення блоку деталей бронювання справа
       if (!isValid || !selectedTableNum) {
         if (summaryTableEl) summaryTableEl.textContent = 'Не обрано';
         if (summaryGuestsEl && !isValid) summaryGuestsEl.textContent = '—';
@@ -489,8 +489,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (hiddenTableInput) hiddenTableInput.value = labelText;
     }
 
-    // Події зміни кількості гостей (ручний ввід та кнопки − / +)
     guestsInput.addEventListener('input', updateHallMap);
+
     stepperBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const delta = parseInt(btn.getAttribute('data-g'), 10) || 0;
@@ -502,7 +502,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Події перемикання зони ресторану
     zoneButtons.forEach(zBtn => {
       zBtn.addEventListener('click', () => {
         zoneButtons.forEach(b => b.classList.remove('on'));
@@ -517,5 +516,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     updateHallMap();
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', runHallWidget);
+  } else {
+    runHallWidget();
+  }
 })();
