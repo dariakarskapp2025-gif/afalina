@@ -321,3 +321,201 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+// =========================================================
+// 5. ІНТЕРАКТИВНА СХЕМА ЗАЛУ ТА ВИБІР СТОЛИКА + EDGE CASES (ЛР №11)
+// =========================================================
+(function initInteractiveHallMap() {
+  document.addEventListener('DOMContentLoaded', () => {
+    const tablesGrid = document.getElementById('tablesGrid');
+    const guestsInput = document.getElementById('guestsInput');
+    const edgeErrorEl = document.getElementById('guestsEdgeError');
+    const hallLandmarkEl = document.getElementById('hallLandmark');
+    const onlyWindowCheck = document.getElementById('onlyWindowFilter');
+    const summaryTableEl = document.getElementById('s-table');
+    const summaryGuestsEl = document.getElementById('s-g');
+    const hiddenTableInput = document.getElementById('selectedTableInput');
+    const submitBtn = document.getElementById('bookingSubmitBtn');
+    const zoneButtons = document.querySelectorAll('.zones .zone');
+    const stepperBtns = document.querySelectorAll('.stepper button[data-g]');
+
+    // Захист: якщо ми не на сторінці booking.html, безпечно завершуємо роботу
+    if (!tablesGrid || !guestsInput || !edgeErrorEl) return;
+
+    const HALL_CONFIG = {
+      terrace: {
+        landmark: '🌊 Перша лінія • Панорама Чорного моря',
+        tables: [
+          { num: 1, seats: 2, busy: false, panorama: true },
+          { num: 2, seats: 2, busy: true,  panorama: true },
+          { num: 3, seats: 4, busy: false, panorama: true },
+          { num: 4, seats: 4, busy: false, panorama: false },
+          { num: 5, seats: 6, busy: false, panorama: true },
+          { num: 6, seats: 8, busy: false, panorama: false },
+          { num: 7, seats: 4, busy: false, panorama: false },
+          { num: 8, seats: 10, busy: false, panorama: true },
+          { num: 9, seats: 12, busy: false, panorama: false }
+        ]
+      },
+      hall: {
+        landmark: '🍽️ Основна зала • Камін, жива музика та панорамні вікна',
+        tables: [
+          { num: 10, seats: 2, busy: false, panorama: true },
+          { num: 11, seats: 4, busy: false, panorama: true },
+          { num: 12, seats: 4, busy: true,  panorama: false },
+          { num: 13, seats: 6, busy: false, panorama: true },
+          { num: 14, seats: 6, busy: false, panorama: false },
+          { num: 15, seats: 8, busy: false, panorama: false },
+          { num: 16, seats: 10, busy: false, panorama: true },
+          { num: 17, seats: 12, busy: false, panorama: false },
+          { num: 18, seats: 4, busy: false, panorama: false }
+        ]
+      },
+      pool: {
+        landmark: '☀️ Лаунж біля басейну • Літній бар та м’які дивани',
+        tables: [
+          { num: 19, seats: 2, busy: false, panorama: true },
+          { num: 20, seats: 4, busy: false, panorama: true },
+          { num: 21, seats: 4, busy: false, panorama: false },
+          { num: 22, seats: 6, busy: true,  panorama: true },
+          { num: 23, seats: 6, busy: false, panorama: true },
+          { num: 24, seats: 8, busy: false, panorama: false },
+          { num: 25, seats: 10, busy: false, panorama: true },
+          { num: 26, seats: 4, busy: false, panorama: false },
+          { num: 27, seats: 12, busy: false, panorama: false }
+        ]
+      }
+    };
+
+    let activeZoneKey = 'terrace';
+    let selectedTableNum = 3;
+
+    function showEdgeError(message) {
+      edgeErrorEl.textContent = message;
+      if (message) {
+        guestsInput.classList.add('is-invalid');
+        guestsInput.setAttribute('aria-invalid', 'true');
+        if (submitBtn) submitBtn.disabled = true;
+      } else {
+        guestsInput.classList.remove('is-invalid');
+        guestsInput.removeAttribute('aria-invalid');
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    }
+
+    function updateHallMap() {
+      const zoneObj = HALL_CONFIG[activeZoneKey] || HALL_CONFIG.terrace;
+      if (hallLandmarkEl) hallLandmarkEl.textContent = zoneObj.landmark;
+
+      const rawValue = guestsInput.value.trim();
+      const parsedGuests = Number(rawValue);
+      let isValid = true;
+
+      // Обробка Edge Cases: порожнє поле, NaN/Infinity, дроби, вихід за межі 1..12
+      if (rawValue === '') {
+        showEdgeError('Вкажіть кількість гостей (від 1 до 12 осіб).');
+        isValid = false;
+      } else if (!Number.isFinite(parsedGuests) || !Number.isInteger(parsedGuests)) {
+        showEdgeError('Кількість гостей має бути цілим числом без літер та дробів.');
+        isValid = false;
+      } else if (parsedGuests < 1 || parsedGuests > 12) {
+        showEdgeError('Допустима кількість гостей за одним столиком — від 1 до 12.');
+        isValid = false;
+      } else {
+        showEdgeError('');
+      }
+
+      const panoramaOnly = Boolean(onlyWindowCheck && onlyWindowCheck.checked);
+
+      // Перевіряємо, чи обраний раніше столик досі доступний під нові умови
+      const currentTable = zoneObj.tables.find(t => t.num === selectedTableNum);
+      const isCurrentAvailable = currentTable &&
+        !currentTable.busy &&
+        (!panoramaOnly || currentTable.panorama) &&
+        (!isValid || currentTable.seats >= parsedGuests);
+
+      if (!isCurrentAvailable) {
+        const autoPick = zoneObj.tables.find(t =>
+          !t.busy &&
+          (!panoramaOnly || t.panorama) &&
+          (!isValid || t.seats >= parsedGuests)
+        );
+        selectedTableNum = autoPick ? autoPick.num : null;
+      }
+
+      // Малюємо інтерактивні кнопки столиків
+      tablesGrid.innerHTML = '';
+      zoneObj.tables.forEach(t => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'table-node';
+
+        const tooSmall = isValid && t.seats < parsedGuests;
+        const hiddenByPanorama = panoramaOnly && !t.panorama;
+        btn.disabled = !isValid || t.busy || tooSmall || hiddenByPanorama;
+
+        if (t.num === selectedTableNum && !btn.disabled) {
+          btn.classList.add('active');
+        }
+
+        const titleEl = document.createElement('strong');
+        titleEl.textContent = `Стіл №${t.num}` + (t.panorama ? ' ★' : '');
+        const descEl = document.createElement('span');
+        descEl.textContent = t.busy ? 'Зайнятий' : `до ${t.seats} місць`;
+
+        btn.appendChild(titleEl);
+        btn.appendChild(descEl);
+
+        btn.addEventListener('click', () => {
+          selectedTableNum = t.num;
+          updateHallMap();
+        });
+
+        tablesGrid.appendChild(btn);
+      });
+
+      // Синхронізація правої картки деталей бронювання
+      if (!isValid || !selectedTableNum) {
+        if (summaryTableEl) summaryTableEl.textContent = 'Не обрано';
+        if (summaryGuestsEl && !isValid) summaryGuestsEl.textContent = '—';
+        if (hiddenTableInput) hiddenTableInput.value = '';
+        if (submitBtn) submitBtn.disabled = true;
+        return;
+      }
+
+      const finalTable = zoneObj.tables.find(t => t.num === selectedTableNum);
+      const labelText = `Стіл №${finalTable.num} (до ${finalTable.seats} місць)`;
+      if (summaryTableEl) summaryTableEl.textContent = labelText;
+      if (summaryGuestsEl) summaryGuestsEl.textContent = `${parsedGuests} ос.`;
+      if (hiddenTableInput) hiddenTableInput.value = labelText;
+    }
+
+    // Події зміни кількості гостей (ручний ввід та кнопки − / +)
+    guestsInput.addEventListener('input', updateHallMap);
+    stepperBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const delta = parseInt(btn.getAttribute('data-g'), 10) || 0;
+        const current = parseInt(guestsInput.value, 10);
+        const safeBase = Number.isInteger(current) ? current : 2;
+        const nextVal = Math.min(12, Math.max(1, safeBase + delta));
+        guestsInput.value = String(nextVal);
+        updateHallMap();
+      });
+    });
+
+    // Події перемикання зони ресторану
+    zoneButtons.forEach(zBtn => {
+      zBtn.addEventListener('click', () => {
+        zoneButtons.forEach(b => b.classList.remove('on'));
+        zBtn.classList.add('on');
+        activeZoneKey = zBtn.getAttribute('data-zone-key') || 'terrace';
+        updateHallMap();
+      });
+    });
+
+    if (onlyWindowCheck) {
+      onlyWindowCheck.addEventListener('change', updateHallMap);
+    }
+
+    updateHallMap();
+  });
+})();
