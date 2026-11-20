@@ -6,7 +6,35 @@
   <title>Ресторанний комплекс — Афаліна</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif:wght@400;600;700&family=Playfair+Display:wght@400;500&display=swap">
+  <!-- CDN стилі Swiper.js v11 та Fancybox v5 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Акуратна стилізація секції відгуків Swiper під дизайн «Афаліни» */
+    .reviews-swiper { padding: 10px 4px 46px; }
+    .review-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 28px;
+      height: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 10px 28px rgba(16, 42, 44, 0.06);
+      border: 1px solid rgba(20, 78, 82, 0.1);
+    }
+    .review-stars { color: #d49b35; font-size: 18px; letter-spacing: 2px; margin-bottom: 12px; }
+    .review-text { font-size: 15px; line-height: 1.6; color: #364748; font-style: italic; margin-bottom: 20px; }
+    .review-author { display: flex; align-items: center; gap: 12px; }
+    .review-author img { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; border: 2px solid var(--teal-d, #144e52); }
+    .review-author strong { display: block; font-size: 15px; color: #1b2a2b; }
+    .review-author span { font-size: 13px; color: #6c7d7e; }
+    .reviews-swiper .swiper-button-next,
+    .reviews-swiper .swiper-button-prev { color: var(--teal-d, #144e52); transform: scale(0.75); }
+    .reviews-swiper .swiper-pagination-bullet-active { background: var(--teal-d, #144e52); }
+    .gal .tile { cursor: zoom-in; }
+  </style>
 </head>
 <body class="home">
   <header class="hd">
@@ -15,7 +43,7 @@
         <img src="img/logo.png" alt="Афаліна — ресторан">
       </a>
       <nav class="nav" id="nav">
-        <a href="index.html" class=on>Головна</a>
+        <a href="index.html" class="on">Головна</a>
         <a href="menu.html">Меню</a>
         <a href="pool.html">Басейн</a>
         <a href="banquets.html">Банкетні зали</a>
@@ -41,7 +69,8 @@
       <div class="wrap reveal-hero">
         <div class="eyebrow">Курортний комплекс у Чорноморську</div>
         <h1>Ресторанний комплекс «Афаліна»</h1>
-        <p>Море поруч. Смак у кожній миті. Ваш відпочинок на узбережжі Чорного моря.</p>
+        <!-- Typed.js анімований підзаголовок -->
+        <p><span id="typed-slogan">Море поруч. Смак у кожній миті. Ваш відпочинок на узбережжі Чорного моря.</span></p>
         <div class="acts">
           <a class="btn" href="booking.html">
             Забронювати столик 
@@ -156,6 +185,7 @@
       </div>
     </section>
 
+    <!-- ГАЛЕРЕЯ FANCYBOX v5 (об'єднана в єдиний альбом data-fancybox="afalina-gallery") -->
     <section class="sec">
       <div class="wrap">
         <div class="head">
@@ -163,25 +193,101 @@
             <div class="eyebrow">Атмосфера біля моря</div>
             <h2>Миті, заради яких варто приїхати</h2>
           </div>
-          <p>Солоний бриз, улюблені смаки та тепле світло над водою.</p>
+          <p>Натисніть на фото, щоб відкрити галерею у повноекранному режимі.</p>
         </div>
         <div class="grid gal">
-          <a class="tile big" href="menu.html">
-            <img src="img/g-terrace.jpg" alt="" loading="lazy">
+          <a class="tile big" href="img/g-terrace.jpg" data-fancybox="afalina-gallery" data-caption="Тераса з морським бризом — панорамний вид на Чорне море">
+            <img src="img/g-terrace.jpg" alt="Тераса з морським бризом" loading="lazy">
             <span>Тераса з морським бризом</span>
           </a>
-          <a class="tile" href="pool.html">
-            <img src="img/g-pool.jpg" alt="" loading="lazy">
+          <a class="tile" href="img/g-pool.jpg" data-fancybox="afalina-gallery" data-caption="День біля відкритого басейну з підігрівом">
+            <img src="img/g-pool.jpg" alt="День біля басейну" loading="lazy">
             <span>День біля басейну</span>
           </a>
-          <a class="tile" href="menu.html">
-            <img src="img/g-food.jpg" alt="" loading="lazy">
+          <a class="tile" href="img/g-food.jpg" data-fancybox="afalina-gallery" data-caption="Свіжі чорноморські морепродукти та європейська кухня">
+            <img src="img/g-food.jpg" alt="Смаки моря" loading="lazy">
             <span>Смаки моря</span>
           </a>
-          <a class="tile" style="grid-column:span 2" href="booking.html">
-            <img src="img/g-sunset.jpg" alt="" loading="lazy">
+          <a class="tile" style="grid-column:span 2" href="img/g-sunset.jpg" data-fancybox="afalina-gallery" data-caption="Вечірня атмосфера та захід сонця на узбережжі">
+            <img src="img/g-sunset.jpg" alt="Вечір у кольорах моря" loading="lazy">
             <span>Вечір у кольорах моря</span>
           </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- СЕКЦІЯ ВІДГУКІВ SWIPER.JS v11 (5 слайдів, адаптивність, autoplay, пагінація та стрілки) -->
+    <section class="sec alt">
+      <div class="wrap">
+        <div class="head">
+          <div>
+            <div class="eyebrow">Враження відпочивальників</div>
+            <h2>Відгуки наших гостей</h2>
+          </div>
+          <p>Щирі історії тих, хто вже провів свій день біля моря в «Афаліні».</p>
+        </div>
+
+        <div class="swiper reviews-swiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide review-card">
+              <div>
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text">«Неймовірна тераса прямо біля води! Паста з чорноморськими мідіями та креветками — просто шедевр. Обов'язково повернемося на захід сонця.»</p>
+              </div>
+              <div class="review-author">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Олена Кравчук" loading="lazy">
+                <div><strong>Олена Кравчук</strong><span>Гостя з Одеси</span></div>
+              </div>
+            </div>
+
+            <div class="swiper-slide review-card">
+              <div>
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text">«Відпочивали всією родиною біля басейну. Вода чиста, зручні шезлонги, а діти були в захваті від ігрової кімнати та аніматорів.»</p>
+              </div>
+              <div class="review-author">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" alt="Андрій Мельник" loading="lazy">
+                <div><strong>Андрій Мельник</strong><span>Сімейний відпочинок</span></div>
+              </div>
+            </div>
+
+            <div class="swiper-slide review-card">
+              <div>
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text">«Святкували тут річницю весілля в банкетному залі. Бездоганний сервіс, свіжі морепродукти та уважний персонал. Усім гостям дуже сподобалось!»</p>
+              </div>
+              <div class="review-author">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150" alt="Марина Савченко" loading="lazy">
+                <div><strong>Марина Савченко</strong><span>Банкетна подія</span></div>
+              </div>
+            </div>
+
+            <div class="swiper-slide review-card">
+              <div>
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text">«Найкраще місце у Чорноморську для спокійного сніданку з видом на море. Швидке бронювання через сайт і приємна музика ввечері.»</p>
+              </div>
+              <div class="review-author">
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150" alt="Дмитро Бондаренко" loading="lazy">
+                <div><strong>Дмитро Бондаренко</strong><span>Постійний гість</span></div>
+              </div>
+            </div>
+
+            <div class="swiper-slide review-card">
+              <div>
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text">«Дуже сподобалось бунгало біля басейну та авторські коктейлі з барної карти. Відчуття, ніби побувала на європейському курорті!»</p>
+              </div>
+              <div class="review-author">
+                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150" alt="Ірина Ткаченко" loading="lazy">
+                <div><strong>Ірина Ткаченко</strong><span>Вікенд біля басейну</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="swiper-pagination"></div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
         </div>
       </div>
     </section>
@@ -267,6 +373,11 @@
       </div>
     </div>
   </footer>
+
+  <!-- Підключення Vanilla JS бібліотек через CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
   <script src="main.js"></script>
 </body>
 </html>

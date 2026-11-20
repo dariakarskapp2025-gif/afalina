@@ -265,3 +265,59 @@ $$('form[data-type]').forEach(form => {
   const want = map[new URLSearchParams(location.search).get('topic')];
   if (want) sel.value = want;
 })();
+
+// =========================================================
+// 4. ІНІЦІАЛІЗАЦІЯ VANILLA JS БІБЛІОТЕК (Swiper, Fancybox, Typed)
+// =========================================================
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. Swiper.js v11 (Слайдер відгуків гостей)
+  if (document.querySelector('.reviews-swiper') && typeof Swiper !== 'undefined') {
+    new Swiper('.reviews-swiper', {
+      loop: true,
+      spaceBetween: 24,
+      autoplay: {
+        delay: 3500,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev'
+      },
+      breakpoints: {
+        320: { slidesPerView: 1 },
+        768: { slidesPerView: 2 },
+        1024: { slidesPerView: 3 }
+      }
+    });
+  }
+
+  // 2. Fancybox v5 (Модальна галерея атмосфери комплексу)
+  if (document.querySelector('[data-fancybox="afalina-gallery"]') && typeof Fancybox !== 'undefined') {
+    Fancybox.bind('[data-fancybox="afalina-gallery"]', {
+      Carousel: { Transition: 'fade' },
+      Images: { Panzoom: { maxScale: 3 } }
+    });
+  }
+
+  // 3. Typed.js (Ефект друкування слоганів у Hero-секції)
+  const typedTarget = document.getElementById('typed-slogan');
+  if (typedTarget && typeof Typed !== 'undefined') {
+    typedTarget.textContent = '';
+    new Typed('#typed-slogan', {
+      strings: [
+        'Море поруч. Смак у кожній миті. Ваш відпочинок на узбережжі Чорного моря.',
+        'Свіжі чорноморські морепродукти, панорамна тераса та відкритий басейн.',
+        'Ідеальне місце для сімейного вікенду, романтичної вечері або банкету.'
+      ],
+      typeSpeed: 45,
+      backSpeed: 25,
+      backDelay: 2500,
+      loop: true
+    });
+  }
+});
