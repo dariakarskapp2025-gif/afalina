@@ -3,15 +3,32 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Ресторанний комплекс — Афаліна</title>
+  <title>Ресторанний комплекс «Афаліна» — відпочинок біля моря у Чорноморську</title>
+  <meta name="description" content="Ресторанний комплекс «Афаліна» на першій лінії моря у Чорноморську: свіжі морепродукти, панорамна тераса, відкритий басейн, банкетні зали та дитяча кімната. Онлайн-бронювання столиків.">
+  <meta name="theme-color" content="#144e52">
+  <link rel="canonical" href="https://dariakarskapp2025-gif.github.io/afalina/index.html">
+
+  <!-- Open Graph для соцмереж та месенджерів -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Ресторанний комплекс «Афаліна» — Чорноморськ">
+  <meta property="og:description" content="Море поруч. Смак у кожній миті. Панорамна тераса, морепродукти, басейн та онлайн-бронювання столиків.">
+  <meta property="og:url" content="https://dariakarskapp2025-gif.github.io/afalina/index.html">
+
+  <!-- Вбудований SVG Favicon (усуває помилку 404 favicon.ico в Console) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23144e52'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='Georgia,serif' font-size='34' font-weight='bold'%3E%D0%90%3C/text%3E%3C/svg%3E">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif:wght@400;600;700&family=Playfair+Display:wght@400;500&display=swap">
+
   <!-- CDN стилі Swiper.js v11 та Fancybox v5 -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css">
   <link rel="stylesheet" href="styles.css">
+
   <style>
-    /* Акуратна стилізація секції відгуків Swiper під дизайн «Афаліни» */
+    /* Секція відгуків Swiper під дизайн «Афаліни» */
     .reviews-swiper { padding: 10px 4px 46px; }
     .review-card {
       background: #fff;
@@ -22,27 +39,87 @@
       flex-direction: column;
       justify-content: space-between;
       box-shadow: 0 10px 28px rgba(16, 42, 44, 0.06);
-      border: 1px solid rgba(20, 78, 82, 0.1);
+      border: 1px solid rgba(20, 78, 82, 0.12);
     }
-    .review-stars { color: #d49b35; font-size: 18px; letter-spacing: 2px; margin-bottom: 12px; }
-    .review-text { font-size: 15px; line-height: 1.6; color: #364748; font-style: italic; margin-bottom: 20px; }
+    .review-stars { color: #b67d18; font-size: 18px; letter-spacing: 2px; margin-bottom: 12px; }
+    .review-text { font-size: 15px; line-height: 1.6; color: #2b3a3b; font-style: italic; margin-bottom: 20px; }
     .review-author { display: flex; align-items: center; gap: 12px; }
     .review-author img { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; border: 2px solid var(--teal-d, #144e52); }
-    .review-author strong { display: block; font-size: 15px; color: #1b2a2b; }
-    .review-author span { font-size: 13px; color: #6c7d7e; }
+    .review-author strong { display: block; font-size: 15px; color: #162324; }
+    .review-author span { font-size: 13px; color: #4f6061; }
     .reviews-swiper .swiper-button-next,
     .reviews-swiper .swiper-button-prev { color: var(--teal-d, #144e52); transform: scale(0.75); }
     .reviews-swiper .swiper-pagination-bullet-active { background: var(--teal-d, #144e52); }
     .gal .tile { cursor: zoom-in; }
+
+    /* Accessibility & Touch Targets (ЛР №12: мінімум 48x48px та контраст WCAG AA) */
+    .burger {
+      min-width: 48px;
+      min-height: 48px;
+    }
+    .ft .soc {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .ft .soc a {
+      min-width: 48px;
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ft small,
+    .ft .fb span,
+    .ft .fb a {
+      color: #d7e4e4 !important;
+    }
+    .ft h3 {
+      font-family: var(--serif, Georgia, serif);
+      font-size: 18px;
+      margin: 0 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Блок мобільного QR-доступу у футері (ЛР №12) */
+    .qr-release-box {
+      margin-top: 14px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .qr-release-box img {
+      background: #fff;
+      padding: 4px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .qr-release-box p {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.4;
+      color: #e6f0f0;
+    }
+    .qr-release-box a {
+      color: #9be8e8;
+      text-decoration: underline;
+      word-break: break-all;
+    }
   </style>
 </head>
 <body class="home">
   <header class="hd">
     <div class="wrap">
       <a class="logo" href="index.html">
-        <img src="img/logo.png" alt="Афаліна — ресторан">
+        <img src="img/logo.png" alt="Афаліна — ресторан" width="140" height="44">
       </a>
-      <nav class="nav" id="nav">
+      <nav class="nav" id="nav" aria-label="Головна навігація">
         <a href="index.html" class="on">Головна</a>
         <a href="menu.html">Меню</a>
         <a href="pool.html">Басейн</a>
@@ -50,7 +127,7 @@
         <a href="kids.html">Дитяча кімната</a>
         <a href="contacts.html">Контакти</a>
       </nav>
-      <span class="lang"><b>UA</b> / EN</span>
+      <span class="lang" aria-label="Мова інтерфейсу: Українська"><b>UA</b> / EN</span>
       <a class="btn" href="booking.html">
         <svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M6 3v7a2 2 0 0 0 4 0V3M8 3v18M17 3c-2 2-3 5-3 8h3v10"/>
@@ -60,7 +137,7 @@
           <path d="M7 17 17 7M8 7h9v9"/>
         </svg>
       </a>
-      <button class="burger" aria-label="Меню" aria-expanded="false">☰</button>
+      <button class="burger" aria-label="Відкрити меню навігації" aria-expanded="false" aria-controls="nav">☰</button>
     </div>
   </header>
 
@@ -69,7 +146,6 @@
       <div class="wrap reveal-hero">
         <div class="eyebrow">Курортний комплекс у Чорноморську</div>
         <h1>Ресторанний комплекс «Афаліна»</h1>
-        <!-- Typed.js анімований підзаголовок -->
         <p><span id="typed-slogan">Море поруч. Смак у кожній миті. Ваш відпочинок на узбережжі Чорного моря.</span></p>
         <div class="acts">
           <a class="btn" href="booking.html">
@@ -99,7 +175,7 @@
     <section class="sec">
       <div class="wrap split">
         <div class="photo">
-          <img src="img/about.jpg" alt="Інтер’єр ресторану" loading="lazy">
+          <img src="img/about.jpg" alt="Інтер’єр ресторану Афаліна з видом на море" width="600" height="450" loading="lazy">
         </div>
         <div>
           <div class="eyebrow">Про ресторан</div>
@@ -185,7 +261,7 @@
       </div>
     </section>
 
-    <!-- ГАЛЕРЕЯ FANCYBOX v5 (об'єднана в єдиний альбом data-fancybox="afalina-gallery") -->
+    <!-- ГАЛЕРЕЯ FANCYBOX v5 -->
     <section class="sec">
       <div class="wrap">
         <div class="head">
@@ -197,26 +273,26 @@
         </div>
         <div class="grid gal">
           <a class="tile big" href="img/g-terrace.jpg" data-fancybox="afalina-gallery" data-caption="Тераса з морським бризом — панорамний вид на Чорне море">
-            <img src="img/g-terrace.jpg" alt="Тераса з морським бризом" loading="lazy">
+            <img src="img/g-terrace.jpg" alt="Тераса з морським бризом" width="600" height="450" loading="lazy">
             <span>Тераса з морським бризом</span>
           </a>
           <a class="tile" href="img/g-pool.jpg" data-fancybox="afalina-gallery" data-caption="День біля відкритого басейну з підігрівом">
-            <img src="img/g-pool.jpg" alt="День біля басейну" loading="lazy">
+            <img src="img/g-pool.jpg" alt="День біля басейну" width="400" height="300" loading="lazy">
             <span>День біля басейну</span>
           </a>
           <a class="tile" href="img/g-food.jpg" data-fancybox="afalina-gallery" data-caption="Свіжі чорноморські морепродукти та європейська кухня">
-            <img src="img/g-food.jpg" alt="Смаки моря" loading="lazy">
+            <img src="img/g-food.jpg" alt="Смаки моря" width="400" height="300" loading="lazy">
             <span>Смаки моря</span>
           </a>
           <a class="tile" style="grid-column:span 2" href="img/g-sunset.jpg" data-fancybox="afalina-gallery" data-caption="Вечірня атмосфера та захід сонця на узбережжі">
-            <img src="img/g-sunset.jpg" alt="Вечір у кольорах моря" loading="lazy">
+            <img src="img/g-sunset.jpg" alt="Вечір у кольорах моря" width="800" height="300" loading="lazy">
             <span>Вечір у кольорах моря</span>
           </a>
         </div>
       </div>
     </section>
 
-    <!-- СЕКЦІЯ ВІДГУКІВ SWIPER.JS v11 (5 слайдів, адаптивність, autoplay, пагінація та стрілки) -->
+    <!-- СЕКЦІЯ ВІДГУКІВ SWIPER.JS v11 -->
     <section class="sec alt">
       <div class="wrap">
         <div class="head">
@@ -231,63 +307,63 @@
           <div class="swiper-wrapper">
             <div class="swiper-slide review-card">
               <div>
-                <div class="review-stars">★★★★★</div>
+                <div class="review-stars" aria-label="Оцінка 5 з 5 зірок">★★★★★</div>
                 <p class="review-text">«Неймовірна тераса прямо біля води! Паста з чорноморськими мідіями та креветками — просто шедевр. Обов'язково повернемося на захід сонця.»</p>
               </div>
               <div class="review-author">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Олена Кравчук" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Фото гості Олени Кравчук" width="46" height="46" loading="lazy">
                 <div><strong>Олена Кравчук</strong><span>Гостя з Одеси</span></div>
               </div>
             </div>
 
             <div class="swiper-slide review-card">
               <div>
-                <div class="review-stars">★★★★★</div>
+                <div class="review-stars" aria-label="Оцінка 5 з 5 зірок">★★★★★</div>
                 <p class="review-text">«Відпочивали всією родиною біля басейну. Вода чиста, зручні шезлонги, а діти були в захваті від ігрової кімнати та аніматорів.»</p>
               </div>
               <div class="review-author">
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" alt="Андрій Мельник" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" alt="Фото гостя Андрія Мельника" width="46" height="46" loading="lazy">
                 <div><strong>Андрій Мельник</strong><span>Сімейний відпочинок</span></div>
               </div>
             </div>
 
             <div class="swiper-slide review-card">
               <div>
-                <div class="review-stars">★★★★★</div>
+                <div class="review-stars" aria-label="Оцінка 5 з 5 зірок">★★★★★</div>
                 <p class="review-text">«Святкували тут річницю весілля в банкетному залі. Бездоганний сервіс, свіжі морепродукти та уважний персонал. Усім гостям дуже сподобалось!»</p>
               </div>
               <div class="review-author">
-                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150" alt="Марина Савченко" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150" alt="Фото гості Марини Савченко" width="46" height="46" loading="lazy">
                 <div><strong>Марина Савченко</strong><span>Банкетна подія</span></div>
               </div>
             </div>
 
             <div class="swiper-slide review-card">
               <div>
-                <div class="review-stars">★★★★★</div>
+                <div class="review-stars" aria-label="Оцінка 5 з 5 зірок">★★★★★</div>
                 <p class="review-text">«Найкраще місце у Чорноморську для спокійного сніданку з видом на море. Швидке бронювання через сайт і приємна музика ввечері.»</p>
               </div>
               <div class="review-author">
-                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150" alt="Дмитро Бондаренко" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150" alt="Фото гостя Дмитра Бондаренка" width="46" height="46" loading="lazy">
                 <div><strong>Дмитро Бондаренко</strong><span>Постійний гість</span></div>
               </div>
             </div>
 
             <div class="swiper-slide review-card">
               <div>
-                <div class="review-stars">★★★★★</div>
+                <div class="review-stars" aria-label="Оцінка 5 з 5 зірок">★★★★★</div>
                 <p class="review-text">«Дуже сподобалось бунгало біля басейну та авторські коктейлі з барної карти. Відчуття, ніби побувала на європейському курорті!»</p>
               </div>
               <div class="review-author">
-                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150" alt="Ірина Ткаченко" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150" alt="Фото гості Ірини Ткаченко" width="46" height="46" loading="lazy">
                 <div><strong>Ірина Ткаченко</strong><span>Вікенд біля басейну</span></div>
               </div>
             </div>
           </div>
 
           <div class="swiper-pagination"></div>
-          <div class="swiper-button-prev"></div>
-          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev" aria-label="Попередній відгук"></div>
+          <div class="swiper-button-next" aria-label="Наступний відгук"></div>
         </div>
       </div>
     </section>
@@ -312,58 +388,66 @@
       </div>
       <div class="fcols">
         <div>
-          <h4>
+          <h3>
             <svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z"/>
               <circle cx="12" cy="10" r="2.5"/>
             </svg> 
             Контакти
-          </h4>
+          </h3>
           м. Чорноморськ, вул. Пляжна, 12<br>
           Телефон: <a href="tel:+380487001122">+38 (048) 700–11–22</a>
           <small>На першій лінії узбережжя Чорного моря</small>
         </div>
         <div>
-          <h4>
+          <h3>
             <svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="12" cy="12" r="9"/>
               <path d="M12 7v5l3 2"/>
             </svg> 
             Години роботи
-          </h4>
+          </h3>
           Пн–Нд: <b>09:00 – 23:00</b><br>
           Басейн: <b>08:00 – 20:00</b>
           <small>Сезонні зміни в графіку уточнюйте в адміністратора</small>
         </div>
         <div>
-          <h4>
+          <h3>
             <svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="6" cy="12" r="2.5"/>
               <circle cx="18" cy="6" r="2.5"/>
               <circle cx="18" cy="18" r="2.5"/>
               <path d="m8 11 8-4M8 13l8 4"/>
             </svg> 
-            Ми в соцмережах
-          </h4>
+            Ми в соцмережах та QR
+          </h3>
           Слідкуйте за свіжими морепродуктами дня, виступами та подіями
           <div class="soc">
-            <a href="#" aria-label="Instagram">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram ресторану Афаліна">
               <svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
                 <rect x="4" y="4" width="16" height="16" rx="5"/>
                 <circle cx="12" cy="12" r="3.5"/>
               </svg>
             </a>
-            <a href="#" aria-label="Сайт">
+            <a href="https://dariakarskapp2025-gif.github.io/afalina/" aria-label="Офіційний сайт Афаліна">
               <svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
                 <circle cx="12" cy="12" r="9"/>
                 <path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>
               </svg>
             </a>
-            <a href="#" aria-label="Telegram">
+            <a href="https://t.me" target="_blank" rel="noopener noreferrer" aria-label="Telegram канал Афаліна">
               <svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M4 12 20 4l-4 16-4-6z"/>
               </svg>
             </a>
+          </div>
+          <!-- Доступний QR-код з дублюванням посилання текстом (ЛР №12) -->
+          <div class="qr-release-box">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=72x72&ecc=H&color=144e52&bgcolor=ffffff&data=https://dariakarskapp2025-gif.github.io/afalina/" alt="QR-код для швидкого відкриття мобільної версії сайту Афаліна" width="72" height="72" loading="lazy">
+            <p>
+              Відкрити на смартфоні:<br>
+              <a href="https://dariakarskapp2025-gif.github.io/afalina/">dariakarskapp2025-gif.github.io/afalina</a>
+            </p>
           </div>
         </div>
       </div>
@@ -374,10 +458,10 @@
     </div>
   </footer>
 
-  <!-- Підключення Vanilla JS бібліотек через CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-  <script src="main.js"></script>
+  <!-- Підключення Vanilla JS бібліотек через CDN з атрибутом defer (не блокують рендер) -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12" defer></script>
+  <script src="main.js?v=5" defer></script>
 </body>
 </html>
